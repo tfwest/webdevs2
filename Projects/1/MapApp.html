@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html data-cloud9-id='1'>
+    <head data-cloud9-id='2'>
+        <title data-cloud9-id='5'>Chicago Crime</title>
+        <style data-cloud9-id='6'>
+            p, h1 {text-align:center;
+                font-family: helvetica;}
+            p {font-size:1.5em; margin-left: 24px; color: white;}
+            pre {font-size: 2em;}
+            
+            div {
+                text-align:center;
+                background-color: #00ace6; 
+                color: white;
+                border: 1px solid black; 
+                border-radius: 6px;
+                min-height:75px;
+                padding:15px;
+            }
+            #subtext {
+                text-align: center;
+                font-family: helvetica;
+                font-size: 1.2em;
+                color: grey;
+            }
+
+        </style>
+    </head>
+    <body data-cloud9-id='3'>
+    <h1 data-cloud9-id='7'>Chicago Crime</h1>
+    
+    
+    <div data-cloud9-id='8' id="form">
+        <p data-cloud9-id='9'>
+            Enter a crime type
+        </p>
+        <p id="subtext">ie Robbery, Prostitution, etc. </p>
+        <input data-cloud9-id='10' id="txtPlate" type="text" placeholder="Enter a crime type"></input>
+        <button data-cloud9-id='11' type="button" id="btnSearch" >Locate</button>
+    </div>
+    
+   
+    <div data-cloud9-id='12' id="results">
+        
+        
+        
+    </div>
+    
+
+    <script data-cloud9-id='13' src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script data-cloud9-id='14'>
+
+       
+        $(function () {    
+            
+            var baseURL = 'https://data.cityofchicago.org/resource/c4ep-ee5m.json';
+            
+            var filters = '?primary_type=';
+            
+            var url = baseURL + filters;   
+            
+            console.log (url);
+            
+            $("#btnSearch").attr("disabled", true);
+            
+            $("#txtPlate").keyup(function(){    
+                if ($("#txtPlate").val() == "") { 
+                    $("#btnSearch").attr("disabled", true)  
+                }
+                else {
+                    $("#btnSearch").attr("disabled", false)
+                }
+            })
+            
+            
+            
+         
+           
+            
+            $("#btnSearch").on("click", function() {
+                
+                
+                $("#results").html("");
+                
+                var plateNum = $("#txtPlate").val();
+           
+                var urlWithParams = url + plateNum;
+                console.log(urlWithParams);  
+           
+                
+                
+                $.getJSON(urlWithParams)      
+                    .done (function (data) {    
+                        
+                        console.log(data);
+                        
+                        var numRecords = data.length; 
+                        
+                        // notify of number of records
+                        var message = 
+                            "<p>Records found: "
+                            + numRecords
+                            + "</p>"
+                        
+                       // $("#results").append(message);
+                        
+                        
+                       
+                        if (numRecords > 0) {
+                           alert(numRecords + ' records found');
+                            $.each (data , 
+                                function (index, value) {
+                                    
+                                    
+                                    var html ="<p>" 
+                                        + "Type: "
+                                        + value.primary_type
+                                        + "<br>"
+                                        + "Arrest: "
+                                        + value.arrest
+                                        + "<br>Date: "
+                                        + value.date
+                                        + "<br>address: "
+                                        + value.block
+                                        + "<br>" + "description: " + value.description + "<br>" + " <a href='https://www.google.com/maps/place/" 
+                                        + value.block + " Chicago, IL'>"
+                                        + "Show me the map</a>" + "</p>";
+                                   
+                                   
+                                    $("#results").append(html);
+     
+                            
+                                
+                                }  
+                            );                           
+                        
+                        }  
+                        else {
+                            alert('No crimes found.');
+                        }
+
+                    })  
+            
+            }) 
+        
+        }) 
+        
+        
+    </script>
+    </body>
+</html>
+
+<script src="/_static/preview/livecss.js"></script>
